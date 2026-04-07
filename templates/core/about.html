@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}About — {{ site_name }}{% endblock %}
+
+{% block content %}
+<div class="page-hero page-hero--about">
+  <div class="container">
+    <h1>About Me</h1>
+  </div>
+</div>
+
+<div class="container container--wide">
+  <div class="about-layout">
+
+    <!-- Bio -->
+    <div class="about-main">
+      {% if profile.avatar %}
+      <div class="about-avatar">
+        <img src="{{ profile.avatar.url }}" alt="{{ profile.name }}" width="280" height="280">
+      </div>
+      {% endif %}
+
+      <div class="prose about-bio">
+        {{ profile.bio_long|linebreaks }}
+      </div>
+
+      {% if profile.cv_file %}
+      <a href="{{ profile.cv_file.url }}" class="btn btn-primary" target="_blank" rel="noopener">
+        <i class="fa-solid fa-download"></i> Download Full CV
+      </a>
+      {% endif %}
+    </div>
+
+    <!-- Sidebar info -->
+    <aside class="about-sidebar">
+      <div class="sidebar-card">
+        <h3>Contact & Location</h3>
+        <ul class="detail-meta-list">
+          <li><i class="fa-solid fa-envelope"></i><a href="mailto:{{ profile.email }}">{{ profile.email }}</a></li>
+          {% if profile.phone %}<li><i class="fa-solid fa-phone"></i><span>{{ profile.phone }}</span></li>{% endif %}
+          <li><i class="fa-solid fa-location-dot"></i><span>{{ profile.location }}</span></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-card">
+        <h3>Online Profiles</h3>
+        <ul class="resource-links">
+          {% if linkedin_url %}<li><a href="{{ linkedin_url }}" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-linkedin"></i> LinkedIn</a></li>{% endif %}
+          {% if github_url %}<li><a href="{{ github_url }}" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i> GitHub</a></li>{% endif %}
+          {% if google_scholar_url %}<li><a href="{{ google_scholar_url }}" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-graduation-cap"></i> Google Scholar</a></li>{% endif %}
+          {% if orcid_url %}<li><a href="{{ orcid_url }}" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-orcid"></i> ORCID</a></li>{% endif %}
+          {% if profile.researchgate_url %}<li><a href="{{ profile.researchgate_url }}" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-researchgate"></i> ResearchGate</a></li>{% endif %}
+        </ul>
+      </div>
+
+      <div class="sidebar-card">
+        <h3>Education</h3>
+        <ul class="detail-meta-list">
+          <li><i class="fa-solid fa-graduation-cap"></i><span><strong>M.Sc. Computer Science (AI)</strong><br>South Asian University, New Delhi, 2019</span></li>
+          <li><i class="fa-solid fa-graduation-cap"></i><span><strong>BCA (Programming & Networking)</strong><br>Bapuji Institute, Karnataka, 2017</span></li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</div>
+{% endblock %}

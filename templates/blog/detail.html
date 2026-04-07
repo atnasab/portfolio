@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ post.effective_meta_title }} — {{ site_name }}{% endblock %}
+{% block meta %}
+<meta name="description" content="{{ post.effective_meta_description }}">
+<meta property="og:title" content="{{ post.effective_meta_title }}">
+<meta property="og:description" content="{{ post.effective_meta_description }}">
+<meta property="og:type" content="article">
+{% if post.cover_image %}<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ post.cover_image.url }}">{% endif %}
+<meta property="article:published_time" content="{{ post.published_at|date:'c' }}">
+<meta property="article:author" content="{{ post.author.get_full_name|default:post.author.username }}">
+{% endblock %}
+
+{% block content %}
+<article class="post-detail">
+
+  <!-- Header -->
+  <header class="post-detail__header">
+    <div class="container container--narrow">
+      {% if post.category %}
+      <a href="{{ post.category.get_absolute_url }}" class="post-detail__cat" style="--cat-color: {{ post.category.color }}">{{ post.category.name }}</a>
+      {% endif %}
+      <h1 class="post-detail__title">{{ post.title }}</h1>
+      <p class="post-detail__excerpt">{{ post.excerpt }}</p>
+      <div class="post-detail__byline">
+        <span><i class="fa-regular fa-user"></i> {{ post.author.get_full_name|default:post.author.username }}</span>
+        <time datetime="{{ post.published_at|date:'Y-m-d' }}"><i class="fa-regular fa-calendar"></i> {{ post.published_at|date:"F j, Y" }}</time>
+        <span><i class="fa-regular fa-clock"></i> {{ post.reading_time }} min read</span>
+      </div>
+    </div>
+    {% if post.cover_image %}
+    <div class="post-detail__cover">
+      <img src="{{ post.cover_image.url }}" alt="{{ post.cover_alt|default:post.title }}" loading="eager">
+    </div>
+    {% endif %}
+  </header>
+
+  <!-- Body -->
+  <div class="container container--narrow">
+    <div class="post-detail__body prose">
+      {{ post.body_html|safe }}
+    </div>
+
+    <!-- Tags -->
+    {% if post.tags.all %}
+    <div class="post-detail__tags">
+      <i class="fa-solid fa-tags"></i>
+      {% for tag in post.tags.all %}
+      <a href="{% url 'blog:list' %}?tag={{ tag.slug }}" class="tag">#{{ tag.name }}</a>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Share -->
+    <div class="post-detail__share">
+      <span>Share:</span>
+      <a href="https://twitter.com/intent/tweet?text={{ post.title|urlencode }}&url={{ request.build_absolute_uri }}" target="_blank" rel="noopener noreferrer" aria-label="Share on Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+      <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ request.build_absolute_uri }}&title={{ post.title|urlencode }}" target="_blank" rel="noopener noreferrer" aria-label="Share on LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+    </div>
+  </div>
+</article>
+
+<!-- Related Posts -->
+{% if related_posts %}
+<section class="section section--alt">
+  <div class="container">
+    <h2 class="section-title">Related Articles</h2>
+    <div class="posts-grid">
+      {% for rpost in related_posts %}
+      {% include "components/post_card.html" with post=rpost %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

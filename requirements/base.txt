@@ -1,0 +1,17 @@
+Django==5.0.6
+django-environ==0.11.2
+django-csp==3.8
+django-ratelimit==4.1.0
+django-axes==6.4.0
+django-taggit==5.0.1
+django-summernote==0.8.20.0
+django-meta==2.4.1
+#django-sitemap==1.0.0
+Pillow
+psycopg2-binary
+gunicorn==22.0.0
+whitenoise==6.7.0
+python-slugify==8.0.4
+bleach==6.1.0
+markdown==3.6
+requests==2.32.3

@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}{{ subject.title }} — Teaching — {{ site_name }}{% endblock %}
+
+{% block content %}
+<div class="page-hero page-hero--sm">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="{% url 'core:home' %}">Home</a>
+      <span>›</span>
+      <a href="{% url 'teaching:list' %}">Teaching</a>
+      <span>›</span>
+      <span>{{ subject.title }}</span>
+    </nav>
+  </div>
+</div>
+
+<div class="container container--wide">
+  <div class="detail-layout">
+
+    <!-- Main -->
+    <article class="detail-main">
+      <header class="detail-header">
+        <div class="subject-icon subject-icon--lg">
+          <i class="fa-solid {{ subject.icon_class|default:'fa-book-open' }}"></i>
+        </div>
+        <div>
+          <div class="detail-badges">
+            <span class="badge badge--level">{{ subject.get_level_display }}</span>
+            {% if subject.is_active %}<span class="badge badge--active">Currently Active</span>{% endif %}
+            {% if subject.academic_year %}<span class="badge badge--year">{{ subject.academic_year }}</span>{% endif %}
+          </div>
+          <h1>{{ subject.title }}</h1>
+          {% if subject.code %}<p class="subject-code-lg">Course code: <strong>{{ subject.code }}</strong></p>{% endif %}
+          <p class="subject-institution-lg">
+            {{ subject.institution }}
+            {% if subject.partner_university %}
+            · <em>Transnational partner: {{ subject.partner_university }}</em>
+            {% endif %}
+          </p>
+        </div>
+      </header>
+
+      <div class="prose">
+        <p>{{ subject.description }}</p>
+      </div>
+
+      {% if subject.syllabus_topics %}
+      <section class="subject-syllabus">
+        <h2>Topics Covered</h2>
+        <ul class="syllabus-list">
+          {% for topic in subject.syllabus_topics %}
+          <li><i class="fa-solid fa-check-circle"></i> {{ topic }}</li>
+          {% endfor %}
+        </ul>
+      </section>
+      {% endif %}
+    </article>
+
+    <!-- Sidebar -->
+    <aside class="detail-sidebar">
+      <div class="sidebar-card">
+        <h3>Course Details</h3>
+        <ul class="detail-meta-list">
+          {% if subject.semester %}<li><i class="fa-regular fa-calendar"></i><span><strong>Semester</strong><br>{{ subject.semester }}</span></li>{% endif %}
+          {% if subject.credits %}<li><i class="fa-solid fa-star-half-stroke"></i><span><strong>Credits</strong><br>{{ subject.credits }}</span></li>{% endif %}
+          {% if subject.students_count %}<li><i class="fa-solid fa-users"></i><span><strong>Students</strong><br>{{ subject.students_count }}+</span></li>{% endif %}
+          <li><i class="fa-solid fa-layer-group"></i><span><strong>Level</strong><br>{{ subject.get_level_display }}</span></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-card">
+        <h3>Links & Resources</h3>
+        <ul class="resource-links">
+          {% if subject.course_url %}
+          <li><a href="{{ subject.course_url }}" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i> Course Page</a></li>
+          {% endif %}
+          {% if subject.materials_url %}
+          <li><a href="{{ subject.materials_url }}" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i> Course Materials</a></li>
+          {% endif %}
+          {% if subject.syllabus_pdf %}
+          <li><a href="{{ subject.syllabus_pdf.url }}" target="_blank"><i class="fa-solid fa-file-pdf"></i> Download Syllabus</a></li>
+          {% endif %}
+        </ul>
+      </div>
+
+      <a href="{% url 'teaching:list' %}" class="btn btn-outline btn-block">← All Subjects</a>
+    </aside>
+  </div>
+</div>
+{% endblock %}

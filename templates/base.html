@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}{{ site_name }}{% endblock %}</title>
+
+  {% block meta %}
+  <meta name="description" content="{{ site_description|default:profile.meta_description }}">
+  <meta property="og:title" content="{% block og_title %}{{ site_name }}{% endblock %}">
+  <meta property="og:description" content="{{ site_description|default:profile.meta_description }}">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  {% endblock %}
+
+  <link rel="canonical" href="{% block canonical %}{{ request.build_absolute_uri }}{% endblock %}">
+  <link rel="alternate" type="application/rss+xml" title="{{ site_name }} Blog" href="{% url 'blog:feed' %}">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+  <!-- ── Navigation ─────────────────────────────────────────── -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="{% url 'core:home' %}" class="brand">
+        <span class="brand-name">{{ site_name }}</span>
+        <span class="brand-role">{{ site_tagline }}</span>
+      </a>
+      <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="site-nav" aria-label="Main navigation">
+        <ul>
+          <li><a href="{% url 'core:home' %}" {% if request.resolver_match.url_name == 'home' %}class="active"{% endif %}>Home</a></li>
+          <li><a href="{% url 'core:about' %}" {% if request.resolver_match.url_name == 'about' %}class="active"{% endif %}>About</a></li>
+          <li><a href="{% url 'projects:list' %}" {% if request.resolver_match.app_name == 'projects' %}class="active"{% endif %}>Research</a></li>
+          <li><a href="{% url 'teaching:list' %}" {% if request.resolver_match.app_name == 'teaching' %}class="active"{% endif %}>Teaching</a></li>
+          <li><a href="{% url 'blog:list' %}" {% if request.resolver_match.app_name == 'blog' %}class="active"{% endif %}>Blog</a></li>
+          <li><a href="{% url 'core:contact' %}" class="nav-cta">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ── Messages ───────────────────────────────────────────── -->
+  {% if messages %}
+  <div class="messages-bar" role="alert">
+    {% for message in messages %}
+    <div class="message message--{{ message.tags }}">
+      <span>{{ message }}</span>
+      <button class="message-close" aria-label="Dismiss">×</button>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- ── Main content ───────────────────────────────────────── -->
+  <main id="main-content">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- ── Footer ─────────────────────────────────────────────── -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-left">
+        <p class="footer-name">{{ site_name }}</p>
+        <p class="footer-tagline">{{ site_tagline }}</p>
+        <p class="footer-location"><i class="fa-solid fa-location-dot"></i> {{ profile.location }}</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Navigate</h4>
+          <ul>
+            <li><a href="{% url 'core:about' %}">About</a></li>
+            <li><a href="{% url 'projects:list' %}">Research</a></li>
+            <li><a href="{% url 'teaching:list' %}">Teaching</a></li>
+            <li><a href="{% url 'blog:list' %}">Blog</a></li>
+            <li><a href="{% url 'core:contact' %}">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Connect</h4>
+          <ul>
+            {% if linkedin_url %}<li><a href="{{ linkedin_url }}" rel="noopener noreferrer" target="_blank"><i class="fa-brands fa-linkedin"></i> LinkedIn</a></li>{% endif %}
+            {% if github_url %}<li><a href="{{ github_url }}" rel="noopener noreferrer" target="_blank"><i class="fa-brands fa-github"></i> GitHub</a></li>{% endif %}
+            {% if google_scholar_url %}<li><a href="{{ google_scholar_url }}" rel="noopener noreferrer" target="_blank"><i class="fa-solid fa-graduation-cap"></i> Scholar</a></li>{% endif %}
+            {% if orcid_url %}<li><a href="{{ orcid_url }}" rel="noopener noreferrer" target="_blank"><i class="fa-brands fa-orcid"></i> ORCID</a></li>{% endif %}
+            <li><a href="{% url 'blog:feed' %}"><i class="fa-solid fa-rss"></i> RSS Feed</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        <p>© {% now "Y" %} {{ site_name }} · Built with Django · <a href="/sitemap.xml">Sitemap</a></p>
+      </div>
+    </div>
+  </footer>
+
+  {% load static %}
+  <script src="{% static 'js/main.js' %}"></script>
+  {% block extra_js %}{% endblock %}
+
+  {% if profile.google_analytics_id %}
+  <script async src="https://www.googletagmanager.com/gtag/js?id={{ profile.google_analytics_id }}"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', '{{ profile.google_analytics_id }}', { anonymize_ip: true });
+  </script>
+  {% endif %}
+</body>
+</html>

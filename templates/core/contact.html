@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Contact — {{ site_name }}{% endblock %}
+
+{% block content %}
+<div class="page-hero page-hero--sm">
+  <div class="container">
+    <h1>Get in Touch</h1>
+    <p>Interested in collaboration, consulting, or just want to say hello?</p>
+  </div>
+</div>
+
+<div class="container container--narrow">
+  <div class="contact-layout">
+
+    <div class="contact-info">
+      <h2>Let's work together</h2>
+      <p>I'm available for remote Data Scientist and AI Engineer roles, research collaborations, and ML consulting engagements.</p>
+      <ul class="contact-details">
+        <li><i class="fa-solid fa-envelope"></i><a href="mailto:{{ profile.email }}">{{ profile.email }}</a></li>
+        <li><i class="fa-solid fa-location-dot"></i><span>{{ profile.location }}</span></li>
+        {% if linkedin_url %}<li><i class="fa-brands fa-linkedin"></i><a href="{{ linkedin_url }}" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>{% endif %}
+        {% if github_url %}<li><i class="fa-brands fa-github"></i><a href="{{ github_url }}" target="_blank" rel="noopener noreferrer">GitHub</a></li>{% endif %}
+      </ul>
+    </div>
+
+    <div class="contact-form-wrap">
+      <form method="post" novalidate class="contact-form">
+        {% csrf_token %}
+        <!-- Honeypot -->
+        <div style="display:none" aria-hidden="true">
+          {{ form.website }}
+        </div>
+
+        <div class="form-row form-row--2">
+          <div class="form-group {% if form.name.errors %}form-group--error{% endif %}">
+            <label for="{{ form.name.id_for_label }}">Name <span aria-hidden="true">*</span></label>
+            {{ form.name }}
+            {% for error in form.name.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+          </div>
+          <div class="form-group {% if form.email.errors %}form-group--error{% endif %}">
+            <label for="{{ form.email.id_for_label }}">Email <span aria-hidden="true">*</span></label>
+            {{ form.email }}
+            {% for error in form.email.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+          </div>
+        </div>
+
+        <div class="form-group {% if form.subject.errors %}form-group--error{% endif %}">
+          <label for="{{ form.subject.id_for_label }}">Subject <span aria-hidden="true">*</span></label>
+          {{ form.subject }}
+          {% for error in form.subject.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+        </div>
+
+        <div class="form-group {% if form.message.errors %}form-group--error{% endif %}">
+          <label for="{{ form.message.id_for_label }}">Message <span aria-hidden="true">*</span></label>
+          {{ form.message }}
+          {% for error in form.message.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg btn-block">
+          <i class="fa-solid fa-paper-plane"></i> Send Message
+        </button>
+      </form>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

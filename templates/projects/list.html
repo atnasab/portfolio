@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Research & Projects — {{ site_name }}{% endblock %}
+
+{% block content %}
+<div class="page-hero page-hero--projects">
+  <div class="container">
+    <h1>Research & Projects</h1>
+    <p>End-to-end ML systems, NLP research, and applied AI across healthcare, energy, and social computing.</p>
+  </div>
+</div>
+
+<div class="container">
+  <div class="projects-grid projects-grid--full">
+    {% for project in projects %}
+    <article class="project-card project-card--lg">
+      {% if project.cover_image %}
+      <a href="{{ project.get_absolute_url }}" class="project-card__img-wrap">
+        <img src="{{ project.cover_image.url }}" alt="{{ project.title }}" loading="lazy">
+      </a>
+      {% endif %}
+      <div class="project-card__body">
+        <div class="project-card__meta">
+          <span class="badge badge--{{ project.status }}">{{ project.get_status_display }}</span>
+          {% if project.metric_value %}
+          <span class="badge badge--metric">{{ project.metric_label }}: {{ project.metric_value }}</span>
+          {% endif %}
+        </div>
+        <h2><a href="{{ project.get_absolute_url }}">{{ project.title }}</a></h2>
+        <p>{{ project.short_description }}</p>
+        <div class="tech-pills">
+          {% for tech in project.tech_list %}
+          <span class="tech-pill">{{ tech }}</span>
+          {% endfor %}
+        </div>
+        <div class="project-card__links">
+          <a href="{{ project.get_absolute_url }}" class="btn btn-sm btn-primary">View Details</a>
+          {% if project.github_url %}<a href="{{ project.github_url }}" target="_blank" rel="noopener" class="icon-link"><i class="fa-brands fa-github"></i> Code</a>{% endif %}
+          {% if project.paper_url %}<a href="{{ project.paper_url }}" target="_blank" rel="noopener" class="icon-link"><i class="fa-solid fa-file-lines"></i> Paper</a>{% endif %}
+          {% if project.demo_url %}<a href="{{ project.demo_url }}" target="_blank" rel="noopener" class="icon-link"><i class="fa-solid fa-arrow-up-right-from-square"></i> Demo</a>{% endif %}
+        </div>
+      </div>
+    </article>
+    {% empty %}
+    <div class="empty-state">
+      <i class="fa-solid fa-flask"></i>
+      <p>Projects coming soon.</p>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

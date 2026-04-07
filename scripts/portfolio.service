@@ -1,0 +1,27 @@
+# /etc/systemd/system/portfolio.service
+[Unit]
+Description=Basanta Singh Portfolio — Gunicorn
+After=network.target postgresql.service
+Requires=portfolio.socket
+
+[Service]
+Type=notify
+User=portfolio
+Group=www-data
+WorkingDirectory=/home/portfolio/app
+Environment="DJANGO_SETTINGS_MODULE=config.settings.production"
+EnvironmentFile=/home/portfolio/app/.env
+ExecStart=/home/portfolio/venv/bin/gunicorn \
+    --config /home/portfolio/app/gunicorn.conf.py \
+    config.wsgi:application
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=5
+PrivateTmp=true
+# Security hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/home/portfolio/app /var/log/portfolio /run/portfolio
+
+[Install]
+WantedBy=multi-user.target

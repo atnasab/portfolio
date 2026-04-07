@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ project.title }} — {{ site_name }}{% endblock %}
+
+{% block content %}
+<div class="page-hero page-hero--sm">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="{% url 'core:home' %}">Home</a>
+      <span>›</span>
+      <a href="{% url 'projects:list' %}">Research</a>
+      <span>›</span>
+      <span>{{ project.title }}</span>
+    </nav>
+  </div>
+</div>
+
+<div class="container container--wide">
+  <div class="detail-layout">
+
+    <!-- Main -->
+    <article class="detail-main">
+      <header class="detail-header">
+        <div class="detail-badges">
+          <span class="badge badge--{{ project.status }}">{{ project.get_status_display }}</span>
+          {% if project.metric_value %}
+          <span class="badge badge--metric">{{ project.metric_label }}: {{ project.metric_value }}</span>
+          {% endif %}
+        </div>
+        <h1>{{ project.title }}</h1>
+        <p class="lead">{{ project.short_description }}</p>
+      </header>
+
+      {% if project.cover_image %}
+      <div class="detail-cover">
+        <img src="{{ project.cover_image.url }}" alt="{{ project.title }}" loading="eager">
+      </div>
+      {% endif %}
+
+      <div class="prose">
+        {{ project.description|linebreaks }}
+      </div>
+
+      {% if project.tech_list %}
+      <section class="project-tech-section">
+        <h2>Technology Stack</h2>
+        <div class="tech-pills tech-pills--lg">
+          {% for tech in project.tech_list %}
+          <span class="tech-pill">{{ tech }}</span>
+          {% endfor %}
+        </div>
+      </section>
+      {% endif %}
+    </article>
+
+    <!-- Sidebar -->
+    <aside class="detail-sidebar">
+      <div class="sidebar-card sidebar-card--accent">
+        <h3>Project Links</h3>
+        <ul class="resource-links">
+          {% if project.github_url %}
+          <li><a href="{{ project.github_url }}" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i> Source Code</a></li>
+          {% endif %}
+          {% if project.demo_url %}
+          <li><a href="{{ project.demo_url }}" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i> Live Demo</a></li>
+          {% endif %}
+          {% if project.paper_url %}
+          <li><a href="{{ project.paper_url }}" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-file-lines"></i> Research Paper</a></li>
+          {% endif %}
+          {% if project.blog_post %}
+          <li><a href="{{ project.blog_post.get_absolute_url }}"><i class="fa-solid fa-pen-nib"></i> Blog Write-up</a></li>
+          {% endif %}
+        </ul>
+      </div>
+
+      <div class="sidebar-card">
+        <h3>Details</h3>
+        <ul class="detail-meta-list">
+          <li><i class="fa-solid fa-circle-dot"></i><span><strong>Status</strong><br>{{ project.get_status_display }}</span></li>
+          {% if project.start_date %}<li><i class="fa-regular fa-calendar"></i><span><strong>Started</strong><br>{{ project.start_date|date:"M Y" }}</span></li>{% endif %}
+          {% if project.end_date %}<li><i class="fa-regular fa-calendar-check"></i><span><strong>Completed</strong><br>{{ project.end_date|date:"M Y" }}</span></li>{% endif %}
+          {% if project.metric_value %}<li><i class="fa-solid fa-chart-line"></i><span><strong>{{ project.metric_label }}</strong><br>{{ project.metric_value }}</span></li>{% endif %}
+        </ul>
+      </div>
+
+      <a href="{% url 'projects:list' %}" class="btn btn-outline btn-block">← All Projects</a>
+    </aside>
+  </div>
+</div>
+{% endblock %}

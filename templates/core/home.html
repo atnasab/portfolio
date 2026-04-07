@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ site_name }} — {{ site_tagline }}{% endblock %}
+
+{% block content %}
+
+<!-- ── Hero ─────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-bg-grid"></div>
+  <div class="container hero-inner">
+    <div class="hero-text">
+      <p class="hero-eyebrow">Hello, I'm</p>
+      <h1 class="hero-name">Basanta<br>Singh</h1>
+      <p class="hero-roles">
+        <span>Data Scientist</span>
+        <span class="dot">·</span>
+        <span>AI / ML Engineer</span>
+        <span class="dot">·</span>
+        <span>Lecturer</span>
+      </p>
+      <p class="hero-bio">{{ profile.bio_short }}</p>
+      <div class="hero-actions">
+        <a href="{% url 'core:about' %}" class="btn btn-primary">About Me</a>
+        <a href="{% url 'blog:list' %}" class="btn btn-outline">Read Blog</a>
+        {% if profile.cv_file %}
+        <a href="{{ profile.cv_file.url }}" class="btn btn-ghost" target="_blank" rel="noopener">
+          <i class="fa-solid fa-download"></i> Download CV
+        </a>
+        {% endif %}
+      </div>
+      <div class="hero-social">
+        {% if linkedin_url %}<a href="{{ linkedin_url }}" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>{% endif %}
+        {% if github_url %}<a href="{{ github_url }}" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>{% endif %}
+        {% if google_scholar_url %}<a href="{{ google_scholar_url }}" target="_blank" rel="noopener noreferrer" aria-label="Google Scholar"><i class="fa-solid fa-graduation-cap"></i></a>{% endif %}
+        {% if orcid_url %}<a href="{{ orcid_url }}" target="_blank" rel="noopener noreferrer" aria-label="ORCID"><i class="fa-brands fa-orcid"></i></a>{% endif %}
+      </div>
+    </div>
+    {% if profile.avatar %}
+    <div class="hero-image">
+      <div class="avatar-frame">
+        <img src="{{ profile.avatar.url }}" alt="{{ profile.name }}" width="360" height="360">
+      </div>
+    </div>
+    {% endif %}
+  </div>
+  <div class="hero-scroll-hint"><span>Scroll</span><i class="fa-solid fa-arrow-down"></i></div>
+</section>
+
+<!-- ── Stats strip ───────────────────────────────────────────── -->
+<section class="stats-strip">
+  <div class="container stats-grid">
+    <div class="stat"><span class="stat-num">6+</span><span class="stat-lbl">Years Experience</span></div>
+    <div class="stat"><span class="stat-num">30+</span><span class="stat-lbl">ML Projects Delivered</span></div>
+    <div class="stat"><span class="stat-num">1</span><span class="stat-lbl">IEEE Publication</span></div>
+    <div class="stat"><span class="stat-num">4.9<small>/5</small></span><span class="stat-lbl">Upwork Rating</span></div>
+  </div>
+</section>
+
+<!-- ── Featured Projects ─────────────────────────────────────── -->
+{% if featured_projects %}
+<section class="section section--projects">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Selected Research & Projects</h2>
+      <a href="{% url 'projects:list' %}" class="section-link">View all <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+    <div class="projects-grid">
+      {% for project in featured_projects %}
+      <article class="project-card">
+        {% if project.cover_image %}
+        <a href="{{ project.get_absolute_url }}" class="project-card__img-wrap">
+          <img src="{{ project.cover_image.url }}" alt="{{ project.title }}" loading="lazy">
+        </a>
+        {% endif %}
+        <div class="project-card__body">
+          <div class="project-card__meta">
+            <span class="badge badge--{{ project.status }}">{{ project.get_status_display }}</span>
+            {% if project.metric_value %}
+            <span class="badge badge--metric">{{ project.metric_label }}: {{ project.metric_value }}</span>
+            {% endif %}
+          </div>
+          <h3><a href="{{ project.get_absolute_url }}">{{ project.title }}</a></h3>
+          <p>{{ project.short_description }}</p>
+          <div class="tech-pills">
+            {% for tech in project.tech_list|slice:":5" %}
+            <span class="tech-pill">{{ tech }}</span>
+            {% endfor %}
+          </div>
+          <div class="project-card__links">
+            {% if project.github_url %}<a href="{{ project.github_url }}" target="_blank" rel="noopener" class="icon-link"><i class="fa-brands fa-github"></i> Code</a>{% endif %}
+            {% if project.paper_url %}<a href="{{ project.paper_url }}" target="_blank" rel="noopener" class="icon-link"><i class="fa-solid fa-file-lines"></i> Paper</a>{% endif %}
+            {% if project.demo_url %}<a href="{{ project.demo_url }}" target="_blank" rel="noopener" class="icon-link"><i class="fa-solid fa-arrow-up-right-from-square"></i> Demo</a>{% endif %}
+          </div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ── Teaching ──────────────────────────────────────────────── -->
+{% if subjects %}
+<section class="section section--teaching section--alt">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Subjects Taught</h2>
+      <a href="{% url 'teaching:list' %}" class="section-link">Full teaching portfolio <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+    <div class="subjects-grid">
+      {% for subject in subjects %}
+      <a href="{{ subject.get_absolute_url }}" class="subject-card">
+        <div class="subject-card__icon">
+          <i class="fa-solid {{ subject.icon_class|default:'fa-book' }}"></i>
+        </div>
+        <div class="subject-card__body">
+          <span class="subject-card__level">{{ subject.get_level_display }}</span>
+          <h3>{{ subject.title }}</h3>
+          <p class="subject-card__institution">{{ subject.institution }}</p>
+          {% if subject.partner_university %}
+          <p class="subject-card__partner"><i class="fa-solid fa-link"></i> {{ subject.partner_university }}</p>
+          {% endif %}
+        </div>
+        <div class="subject-card__arrow"><i class="fa-solid fa-chevron-right"></i></div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ── Recent Blog Posts ─────────────────────────────────────── -->
+{% if recent_posts %}
+<section class="section section--blog">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Latest Writing</h2>
+      <a href="{% url 'blog:list' %}" class="section-link">All articles <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+    <div class="posts-grid posts-grid--home">
+      {% for post in recent_posts %}
+      {% include "components/post_card.html" with post=post %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ── CTA ───────────────────────────────────────────────────── -->
+<section class="cta-section">
+  <div class="container cta-inner">
+    <h2>Open to remote opportunities</h2>
+    <p>Looking for a senior Data Scientist or AI Engineer to build intelligent systems that create real-world impact? Let's talk.</p>
+    <div class="cta-actions">
+      <a href="{% url 'core:contact' %}" class="btn btn-primary btn-lg">Get in Touch</a>
+      {% if profile.cv_file %}
+      <a href="{{ profile.cv_file.url }}" class="btn btn-outline btn-lg" target="_blank">Download CV</a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% endblock %}

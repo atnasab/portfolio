@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Teaching — {{ site_name }}{% endblock %}
+
+{% block content %}
+<div class="page-hero">
+  <div class="container">
+    <h1>Teaching</h1>
+    <p>Subjects taught at BSc and postgraduate level, currently at Biratnagar International College in partnership with the University of Wolverhampton, UK.</p>
+  </div>
+</div>
+
+<div class="container">
+
+  {% if active_subjects %}
+  <section class="section">
+    <h2 class="section-title section-title--ruled">Currently Teaching</h2>
+    <div class="subjects-detail-grid">
+      {% for subject in active_subjects %}
+      <article class="subject-detail-card">
+        <div class="subject-detail-card__left">
+          <div class="subject-icon"><i class="fa-solid {{ subject.icon_class|default:'fa-book-open' }}"></i></div>
+          {% if subject.code %}<span class="subject-code">{{ subject.code }}</span>{% endif %}
+        </div>
+        <div class="subject-detail-card__body">
+          <div class="subject-detail-card__meta">
+            <span class="badge badge--level">{{ subject.get_level_display }}</span>
+            {% if subject.academic_year %}<span class="badge badge--year">{{ subject.academic_year }}</span>{% endif %}
+            {% if subject.students_count %}<span class="badge badge--students"><i class="fa-solid fa-users"></i> {{ subject.students_count }}+ students</span>{% endif %}
+          </div>
+          <h3><a href="{{ subject.get_absolute_url }}">{{ subject.title }}</a></h3>
+          <p class="subject-institution">
+            {{ subject.institution }}
+            {% if subject.partner_university %}
+            <span class="partner-badge"><i class="fa-solid fa-handshake"></i> {{ subject.partner_university }}</span>
+            {% endif %}
+          </p>
+          <p>{{ subject.description|truncatewords:40 }}</p>
+          <div class="subject-detail-card__links">
+            <a href="{{ subject.get_absolute_url }}" class="btn btn-sm btn-outline">View Details</a>
+            {% if subject.materials_url %}
+            <a href="{{ subject.materials_url }}" target="_blank" rel="noopener" class="icon-link"><i class="fa-brands fa-github"></i> Materials</a>
+            {% endif %}
+            {% if subject.syllabus_pdf %}
+            <a href="{{ subject.syllabus_pdf.url }}" class="icon-link" target="_blank"><i class="fa-solid fa-file-pdf"></i> Syllabus PDF</a>
+            {% endif %}
+          </div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if past_subjects %}
+  <section class="section">
+    <h2 class="section-title section-title--ruled">Previously Taught</h2>
+    <div class="subjects-table-wrap">
+      <table class="subjects-table">
+        <thead>
+          <tr><th>Subject</th><th>Institution</th><th>Level</th><th>Year</th><th></th></tr>
+        </thead>
+        <tbody>
+          {% for subject in past_subjects %}
+          <tr>
+            <td><a href="{{ subject.get_absolute_url }}">{{ subject.title }}</a></td>
+            <td>{{ subject.institution }}</td>
+            <td>{{ subject.get_level_display }}</td>
+            <td>{{ subject.academic_year }}</td>
+            <td><a href="{{ subject.get_absolute_url }}" class="icon-link">Details <i class="fa-solid fa-chevron-right"></i></a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+  {% endif %}
+
+</div>
+{% endblock %}

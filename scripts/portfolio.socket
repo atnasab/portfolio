@@ -1,0 +1,11 @@
+# /etc/systemd/system/portfolio.socket
+[Unit]
+Description=Portfolio Gunicorn Socket
+
+[Socket]
+ListenStream=/run/portfolio/gunicorn.sock
+SocketUser=www-data
+SocketMode=0660
+
+[Install]
+WantedBy=sockets.target

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Blog — {{ site_name }}{% endblock %}
+
+{% block content %}
+<div class="page-hero page-hero--blog">
+  <div class="container">
+    <h1>Blog</h1>
+    <p>Thoughts on AI, machine learning, NLP, data science and education.</p>
+  </div>
+</div>
+
+<div class="container blog-layout">
+  <!-- Filters -->
+  <div class="blog-filters">
+    <form method="get" class="search-form" role="search">
+      <input type="search" name="q" value="{{ query }}" placeholder="Search articles…" aria-label="Search">
+      <button type="submit" aria-label="Submit search"><i class="fa-solid fa-magnifying-glass"></i></button>
+    </form>
+    <div class="category-filters">
+      <a href="{% url 'blog:list' %}" class="cat-btn {% if not active_category %}cat-btn--active{% endif %}">All</a>
+      {% for cat in categories %}
+      <a href="{{ cat.get_absolute_url }}" class="cat-btn {% if active_category.pk == cat.pk %}cat-btn--active{% endif %}" style="--cat-color: {{ cat.color }}">{{ cat.name }}</a>
+      {% endfor %}
+    </div>
+  </div>
+
+  {% if query %}
+  <p class="search-results-label">{{ page_obj.paginator.count }} result{{ page_obj.paginator.count|pluralize }} for "<strong>{{ query }}</strong>"</p>
+  {% endif %}
+
+  {% if page_obj.object_list %}
+  <div class="posts-grid">
+    {% for post in page_obj %}
+    {% include "components/post_card.html" with post=post %}
+    {% endfor %}
+  </div>
+
+  <!-- Pagination -->
+  {% if page_obj.has_other_pages %}
+  <nav class="pagination" aria-label="Post pagination">
+    {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if active_category %}&category={{ active_category.slug }}{% endif %}" class="page-btn">← Previous</a>
+    {% endif %}
+    <span class="page-info">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+    {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if active_category %}&category={{ active_category.slug }}{% endif %}" class="page-btn">Next →</a>
+    {% endif %}
+  </nav>
+  {% endif %}
+
+  {% else %}
+  <div class="empty-state">
+    <i class="fa-solid fa-pen-nib"></i>
+    <p>No posts found{% if query %} for "{{ query }}"{% endif %}. Check back soon!</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
